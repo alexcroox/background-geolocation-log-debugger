@@ -11,3 +11,5 @@ This web app does not upload anything, your log file is processed locally by you
 ## Use it
 
 A hosted version of [this tool is available here](https://alexcroox.github.io/background-geolocation-log-debugger/)
+
+![ss](https://cl.ly/nmtE/Screen%20Shot%202017-11-18%20at%2016.40.10.png)
