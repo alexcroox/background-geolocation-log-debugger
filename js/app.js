@@ -52,6 +52,7 @@ $('#map').resizable({
   resizeHeight: false,
   onDragEnd: () => {
     localStorage.setItem('mapWidth', $('#map').width())
+    map.handler.invalidateSize()
   }
 })
 
