@@ -1,6 +1,5 @@
 @import url('map.css');
 @import url('sidebar.css');
-@import url('modal.css');
 
 html,body {
   height: 100%;
@@ -21,4 +20,15 @@ html,body {
 
 #parse-progress {
   margin-top: 20px;
+}
+
+.inline-select {
+  display: inline-block;
+  margin-top: 0;
+  margin-left: 20px;
+  min-width: 350px
+}
+
+.select-wrapper .caret {
+  z-index: 1;
 }

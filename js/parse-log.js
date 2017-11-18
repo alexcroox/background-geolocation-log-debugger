@@ -18,7 +18,16 @@ class ParseLog {
     // View events for a different day
     $('body').on('change', '#choose-date', e => {
       setTimeout(() => {
+
+        this.populateServiceFilters()
         this.renderDataList()
+      }, 500)
+    })
+
+    // Change event filters
+    $('body').on('change', '#filter', e => {
+      setTimeout(() => {
+        this.filterEvents()
       }, 500)
     })
 
@@ -119,9 +128,10 @@ class ParseLog {
       $('#choose-date').append(`<option value="${date}">${dateFormat(date, 'dddd, mmmm dS')}</option>`)
     })
 
-    $('#choose-date').material_select()
+    $('#choose-date').select()
 
     this.renderDataList()
+    this.populateServiceFilters()
   }
 
   renderDataList(data = []) {
@@ -162,6 +172,45 @@ class ParseLog {
       scrollId: 'data-list-scroll',
       contentId: 'data-list-content'
     });
+  }
+
+  populateServiceFilters() {
+
+    let filterOptions = []
+
+    _.each(this.selectedDateData, (entry, index) => {
+
+      if(filterOptions.indexOf(entry.event.service) === -1)
+        filterOptions.push(entry.event.service)
+    })
+
+    filterOptions.sort()
+
+    $('#filter').html('<option value="" disabled>Choose which events to filter by</option>')
+
+    _.each(filterOptions, filter => {
+      $('#filter').append(`<option value="${filter}">${filter}</option>`)
+    })
+
+    $('#filter').select()
+  }
+
+  filterEvents() {
+    let filters = $('#filter').val()
+
+    console.log('Filters', filters)
+
+    let filteredData = []
+
+    _.each(this.selectedDateData, (entry, index) => {
+      if (filters.indexOf(entry.event.service) !== -1) {
+        filteredData.push(entry)
+      }
+    })
+
+    console.log('Filtered data', filteredData)
+
+    this.renderDataList(filteredData)
   }
 
   showOnlySettingsEvents() {
