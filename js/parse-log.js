@@ -3,14 +3,13 @@ class ParseLog {
   constructor(dataString) {
     this.data = {}
     this.selectedDateData = []
-    this.userAppSettings = {}
     this.clusterize = null
     this.keyUpTimer = null
     // Is the current line a new date/time entry?
     // Match example: 11-15 13:48:10
     this.findDate = /^\d\d-\d\d\s\d\d:\d\d:\d\d/
     // Find event e.g "TSLocationManager onSingleLocationResult"
-    this.findEvent = /[^[]+(?=])/
+    this.findBetweenSquareBrackets = /[^[]+(?=])/
 
     this.addHandlers()
   }
@@ -20,7 +19,7 @@ class ParseLog {
     $('body').on('change', '#choose-date', e => {
       setTimeout(() => {
 
-        this.renderDataList()
+        this.renderDataList([], true)
         this.populateServiceFilters()
       }, 500)
     })
@@ -38,7 +37,7 @@ class ParseLog {
 
       this.keyUpTimer = setTimeout(() => {
         this.search($(e.target).val())
-      }, 1000)
+      }, 500)
     })
 
     // Expand all checkbox
@@ -51,6 +50,18 @@ class ParseLog {
       e.preventDefault()
 
       $(e.target).find('.collection-item-expand').toggleClass('collection-item-expand-show')
+    })
+
+    $('body').on('click', '#load-new', e => {
+      e.preventDefault()
+
+      map.clearAllLocations()
+      this.data = {}
+      this.selectedDateData = []
+      $('.file-field').show().find('#upload-error').hide()
+      $('#parse-progress').hide()
+      $('#setup').show()
+      $('#data').hide()
     })
   }
 
@@ -89,7 +100,7 @@ class ParseLog {
 
           let stringAsArray = line.split(" ")
           let logType = stringAsArray[2]
-          let foundEvent = line.match(this.findEvent)
+          let foundEvent = line.match(this.findBetweenSquareBrackets)
           let eventCombined = (foundEvent.length) ? foundEvent[0] : 'unknown unknown'
           let eventCombinedAsArray = eventCombined.split(" ")
 
@@ -111,6 +122,21 @@ class ParseLog {
           })
 
         } else {
+          // Check for location e.g ╟─ Location[fused 50.791404,-1.094596 acc=18 et=+28m48s885ms alt=54.29999923706055], age: 99ms
+          if(line.indexOf('Location[fused') > 1) {
+            let findLocationData = line.match(this.findBetweenSquareBrackets)
+
+            if(findLocationData.length) {
+              let locationData = findLocationData[0].split(" ")
+              let positionArray = locationData[1].split(",")
+
+              this.data[lastDateKey][this.data[lastDateKey].length - 1].location = {
+                position: [positionArray[0], positionArray[1]],
+                accuracy: locationData[2].substr(4, 2)
+              }
+            }
+          }
+
           this.data[lastDateKey][this.data[lastDateKey].length - 1].data.push(line)
         }
       })
@@ -125,22 +151,27 @@ class ParseLog {
     $('#setup').hide()
     $('#data').show()
 
+    $('#choose-date').html('')
+
     _.each(this.data, (data, date) => {
       $('#choose-date').append(`<option value="${date}">${dateFormat(date, 'dddd, mmmm dS')}</option>`)
     })
 
     $('#choose-date').select()
 
-    this.renderDataList()
+    this.renderDataList([], true)
     this.populateServiceFilters()
   }
 
-  renderDataList(data = []) {
+  renderDataList(data = [], changeMap = false, allowEmpty = false) {
 
-    if (!data.length) {
+    if (!data.length && !allowEmpty) {
       this.selectedDateData = this.data[$('#choose-date').val()]
       data = this.selectedDateData
     }
+
+    if(changeMap)
+      map.clearAllLocations()
 
     //console.log('Filtered data: ', data)
 
@@ -164,6 +195,12 @@ class ParseLog {
           ${entry.event.service} → ${entry.event.method}
           <span class="collection-item-expand ${expandClass}" data-index="${index}">${additionalDebug}</span>
         </div>`)
+
+      if(changeMap && entry.location) {
+        let modalTitle = `${entry.event.service} → ${entry.event.method}`
+        let modalBody = `${entry.time}.${entry.accurateTime}<br>`
+        map.addLocation(entry.location, entry.time, modalTitle, modalBody)
+      }
     })
 
     if (!this.clusterize) {
@@ -175,9 +212,14 @@ class ParseLog {
     } else {
       this.clusterize.update(rows)
     }
+
+    if(changeMap)
+      map.fitToBounds()
   }
 
   search(searchTerm) {
+
+    searchTerm = searchTerm.trim()
 
     if(searchTerm == '') {
       return this.renderDataList(this.selectedDateData)
@@ -217,7 +259,7 @@ class ParseLog {
         filteredData.push(filteredEntry)
     })
 
-    this.renderDataList(filteredData)
+    this.renderDataList(filteredData, false, true)
   }
 
   populateServiceFilters() {

@@ -45,13 +45,13 @@ filesInput.addEventListener('change', event => {
 let savedMapWidth = localStorage.getItem('mapWidth')
 
 if (savedMapWidth)
-  $('#map').width(`${savedMapWidth}px`)
+  $('#map-container').width(`${savedMapWidth}px`)
 
-$('#map').resizable({
+$('#map-container').resizable({
   handleSelector: '#column-resize',
   resizeHeight: false,
   onDragEnd: () => {
-    localStorage.setItem('mapWidth', $('#map').width())
+    localStorage.setItem('mapWidth', $('#map-container').width())
     map.handler.invalidateSize()
   }
 })

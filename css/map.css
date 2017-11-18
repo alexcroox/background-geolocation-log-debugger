@@ -1,6 +1,35 @@
-#map {
+#map-container {
   width: 50%;
   min-width: 200px;
   background: #CCC;
   height: 100%;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+#load-new {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+}
+
+.map-tooltip {
+  background: #FFF;
+  border: 1px solid #666;
+  box-shadow: none;
+}
+
+.map-tooltip:before {
+  display: none;
 }

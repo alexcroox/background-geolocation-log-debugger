@@ -37,3 +37,10 @@ html,body {
 .select-wrapper .caret {
   z-index: 1;
 }
+
+.btn-small {
+  font-size: 0.7rem;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 0.8rem;
+}

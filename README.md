@@ -6,8 +6,6 @@ Upload your `background-geolocation.log` files for a map based debugging experie
 
 ## Location Privacy
 
-Remember, your log files might contain sensitive location information about your movements. 
-
 This web app does not upload anything, your log file is processed locally by your browser only.
 
 ## Use it

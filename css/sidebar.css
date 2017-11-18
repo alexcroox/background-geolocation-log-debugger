@@ -87,3 +87,7 @@
 .collection-item-time span {
   font-size: 10px
 }
+
+.clusterize-no-data {
+  padding: 20px;
+}
