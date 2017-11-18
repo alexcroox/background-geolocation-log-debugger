@@ -12,4 +12,4 @@ This web app does not upload anything, your log file is processed locally by you
 
 ## Use it
 
-A hosted version of [this tool is available here]()
+A hosted version of [this tool is available here](https://alexcroox.github.io/background-geolocation-log-debugger/)
