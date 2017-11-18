@@ -1,0 +1,65 @@
+#sidebar {
+  flex: 1;
+  background: #FFF;
+  padding: 0 20px;
+  position: relative;
+}
+
+#date-picker {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+}
+
+#action-bar {
+  position: absolute;
+  top: 70px;
+  left: 20px;
+  right: 20px;
+}
+
+#data-list {
+  position: absolute;
+  top: 117px;
+  bottom: 0;
+  left: 0px;
+  right: 0px;
+  overflow-y: auto;
+  margin: 0;
+  border: none;
+}
+
+#data-list .collection-item:hover {
+  cursor: pointer;
+}
+
+.collection-item-expand {
+  display: none;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 21px;
+  word-break: break-all;
+  overflow-x: auto;
+  white-space: nowrap;
+  background: #FFF;
+  margin-left: -20px;
+  margin-right: -20px;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 10px;
+}
+
+.collection-item-expand-show {
+  display: block;
+}
+
+.collection-item-time {
+  font-size: 13px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.collection-item-time span {
+  font-size: 10px
+}

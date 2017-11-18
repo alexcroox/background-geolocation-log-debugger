@@ -1,0 +1,24 @@
+@import url('map.css');
+@import url('sidebar.css');
+@import url('modal.css');
+
+html,body {
+  height: 100%;
+}
+
+.layout-wrap {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+#column-resize {
+  height: 100%;
+  background: #666;
+  width: 5px;
+  cursor: col-resize;
+}
+
+#parse-progress {
+  margin-top: 20px;
+}
