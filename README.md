@@ -2,7 +2,7 @@
 
 This tool is designed to work with the [Transistor Software geolocation plugin](https://shop.transistorsoft.com/).
 
-Upload your `background-geolocation.log` files for a map based debugging experience.
+Load your `background-geolocation.log` files for a map based debugging experience.
 
 ## Location Privacy
 
