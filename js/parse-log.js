@@ -5,6 +5,7 @@ class ParseLog {
     this.selectedDateData = []
     this.userAppSettings = {}
     this.clusterize = null
+    this.keyUpTimer = null
     // Is the current line a new date/time entry?
     // Match example: 11-15 13:48:10
     this.findDate = /^\d\d-\d\d\s\d\d:\d\d:\d\d/
@@ -29,6 +30,20 @@ class ParseLog {
       setTimeout(() => {
         this.filterEvents()
       }, 500)
+    })
+
+    $('body').on('keyup', '#search', e => {
+
+      clearTimeout(this.keyUpTimer)
+
+      this.keyUpTimer = setTimeout(() => {
+        this.search($(e.target).val())
+      }, 1000)
+    })
+
+    // Expand all checkbox
+    $('body').on('change', '#expand-all', e => {
+      this.expandAll()
     })
 
     // Expand event in sidebar
@@ -139,13 +154,15 @@ class ParseLog {
         additionalDebug += `<br>${_.escape(line)}`
       })
 
+      let expandClass = (entry.expandForSearch)? 'collection-item-expand-show' : ''
+
       rows.push(`
         <div data-index="${index}" class="collection-item active">
           <span class="collection-item-time">
             ${entry.time}<span>.${entry.accurateTime}</span>
           </span>
           ${entry.event.service} → ${entry.event.method}
-          <span class="collection-item-expand" data-index="${index}">${additionalDebug}</span>
+          <span class="collection-item-expand ${expandClass}" data-index="${index}">${additionalDebug}</span>
         </div>`)
     })
 
@@ -158,6 +175,49 @@ class ParseLog {
     } else {
       this.clusterize.update(rows)
     }
+  }
+
+  search(searchTerm) {
+
+    if(searchTerm == '') {
+      return this.renderDataList(this.selectedDateData)
+    }
+
+    searchTerm = searchTerm.toLowerCase()
+
+    console.log('Searching for', searchTerm)
+
+    let filteredData = []
+    // We want a seperate copy because we are going to mutate it for search expansion
+    let selectedDataCopy = {...this.selectedDateData}
+
+    _.each(selectedDataCopy, (entry, index) => {
+
+      let entryFound = false
+      let subEntryFound = false
+
+      if (entry.raw.toLowerCase().indexOf(searchTerm) > -1) {
+        entryFound = true
+      }
+
+      _.each(entry.data, (data, index) => {
+        if (data.toLowerCase().indexOf(searchTerm) > -1) {
+          entryFound = true
+          subEntryFound = true
+        }
+      })
+
+      let filteredEntry = {...entry}
+
+      if(subEntryFound) {
+        filteredEntry.expandForSearch = true
+      }
+
+      if(entryFound)
+        filteredData.push(filteredEntry)
+    })
+
+    this.renderDataList(filteredData)
   }
 
   populateServiceFilters() {
@@ -173,7 +233,7 @@ class ParseLog {
       if (filterOptions.indexOf(service) === -1 && service !== 'Settings')
         filterOptions.push(service)
 
-      if(service === 'Settings')
+      if (service === 'Settings')
         hasServices = true
     })
 
@@ -181,7 +241,7 @@ class ParseLog {
 
     $('#filter').html(`<option value="" disabled>Choose which events to filter by</option>`)
 
-    if(hasServices)
+    if (hasServices)
       $('#filter').append(`<option value="Settings">Settings</option>`)
 
     _.each(filterOptions, filter => {
@@ -203,5 +263,10 @@ class ParseLog {
     })
 
     this.renderDataList(filteredData)
+  }
+
+  expandAll() {
+    $('#data-list').toggleClass('expand-all')
+    this.clusterize.refresh()
   }
 }

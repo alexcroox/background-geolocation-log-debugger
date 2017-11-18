@@ -15,14 +15,31 @@
 
 #action-bar {
   position: absolute;
-  top: 70px;
+  top: 63px;
   left: 20px;
   right: 20px;
 }
 
+#action-bar .row {
+  display: flex;
+}
+
+#action-bar .col {
+  align-self: center;
+}
+
+#action-bar .input-field {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#action-bar .input-field .prefix {
+  top: 14px;
+}
+
 #data-list {
   position: absolute;
-  top: 80px;
+  top: 123px;
   bottom: 0;
   left: 0px;
   right: 0px;
@@ -51,11 +68,12 @@
   margin-left: -20px;
   margin-right: -20px;
   margin-top: 10px;
+  margin-bottom: -9px;
   color: rgba(0, 0, 0, 0.87);
   padding: 10px;
 }
 
-.collection-item-expand-show {
+#data-list.expand-all .collection-item-expand, .collection-item-expand-show {
   display: block;
 }
 
