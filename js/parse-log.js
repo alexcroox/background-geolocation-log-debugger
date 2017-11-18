@@ -19,8 +19,8 @@ class ParseLog {
     $('body').on('change', '#choose-date', e => {
       setTimeout(() => {
 
-        this.populateServiceFilters()
         this.renderDataList()
+        this.populateServiceFilters()
       }, 500)
     })
 
@@ -36,20 +36,6 @@ class ParseLog {
       e.preventDefault()
 
       $(e.target).find('.collection-item-expand').toggleClass('collection-item-expand-show')
-    })
-
-    $('body').on('click', '#view-configs', e => {
-      e.preventDefault()
-
-      let $button = $(e.target)
-
-      if (!$button.hasClass('active')) {
-        this.showOnlySettingsEvents()
-        $button.addClass('active')
-      } else {
-        this.renderDataList()
-        $button.removeClass('active')
-      }
     })
   }
 
@@ -114,7 +100,7 @@ class ParseLog {
         }
       })
 
-      console.log(this.data)
+      console.log('All parsed data:', this.data)
 
       resolve()
     })
@@ -141,14 +127,9 @@ class ParseLog {
       data = this.selectedDateData
     }
 
-    console.log(data)
-    console.log(data.length)
+    //console.log('Filtered data: ', data)
 
-    if (this.clusterize) {
-      this.clusterize.destroy()
-    }
-
-    $('#data-list-content').html('')
+    let rows = []
 
     _.each(data, (entry, index) => {
 
@@ -158,7 +139,7 @@ class ParseLog {
         additionalDebug += `<br>${_.escape(line)}`
       })
 
-      $('#data-list-content').append(`
+      rows.push(`
         <div data-index="${index}" class="collection-item active">
           <span class="collection-item-time">
             ${entry.time}<span>.${entry.accurateTime}</span>
@@ -168,25 +149,40 @@ class ParseLog {
         </div>`)
     })
 
-    this.clusterize = new Clusterize({
-      scrollId: 'data-list-scroll',
-      contentId: 'data-list-content'
-    });
+    if (!this.clusterize) {
+      this.clusterize = new Clusterize({
+        rows,
+        scrollId: 'data-list-scroll',
+        contentId: 'data-list-content'
+      });
+    } else {
+      this.clusterize.update(rows)
+    }
   }
 
   populateServiceFilters() {
 
     let filterOptions = []
+    let hasServices = false
 
     _.each(this.selectedDateData, (entry, index) => {
 
-      if(filterOptions.indexOf(entry.event.service) === -1)
-        filterOptions.push(entry.event.service)
+      let service = entry.event.service
+
+      // We want to be able to easily view settings so lets keep it at the top
+      if (filterOptions.indexOf(service) === -1 && service !== 'Settings')
+        filterOptions.push(service)
+
+      if(service === 'Settings')
+        hasServices = true
     })
 
     filterOptions.sort()
 
-    $('#filter').html('<option value="" disabled>Choose which events to filter by</option>')
+    $('#filter').html(`<option value="" disabled>Choose which events to filter by</option>`)
+
+    if(hasServices)
+      $('#filter').append(`<option value="Settings">Settings</option>`)
 
     _.each(filterOptions, filter => {
       $('#filter').append(`<option value="${filter}">${filter}</option>`)
@@ -198,8 +194,6 @@ class ParseLog {
   filterEvents() {
     let filters = $('#filter').val()
 
-    console.log('Filters', filters)
-
     let filteredData = []
 
     _.each(this.selectedDateData, (entry, index) => {
@@ -208,25 +202,6 @@ class ParseLog {
       }
     })
 
-    console.log('Filtered data', filteredData)
-
     this.renderDataList(filteredData)
-  }
-
-  showOnlySettingsEvents() {
-
-    let filteredData = []
-
-    _.each(this.selectedDateData, (entry, index) => {
-      if (entry.isSettings !== -1) {
-        filteredData.push(entry)
-      }
-    })
-
-    this.renderDataList(filteredData)
-
-    setTimeout(() => {
-      $('.collection-item').first().click()
-    }, 1500)
   }
 }

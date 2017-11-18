@@ -39,9 +39,7 @@
           <h5>Location Privacy</h5>
           <p>
             This web app does not upload anything, your log file is processed
-            locally by your browser only.
-            <br>
-            The full source code can be <a href="https://github.com/alexcroox/" target="_blank">found on Github</a>
+            locally by your browser only. The full source code can be <a href="https://github.com/alexcroox/" target="_blank">found on Github</a>
           </p>
         </div>
 
@@ -66,22 +64,33 @@
             <div class="indeterminate"></div>
           </div>
         </div>
+
+        <footer>
+          <span class="resize-hint">
+            ↔
+            This sidebar can be resized
+          </span>
+
+          <span class="credits">
+            Created by
+            <a href="https://alexcrooks.me/">Alex Crooks</a>
+          </span>
+        </footer>
       </div><!--/setup-->
 
       <div id="data" style="display:none">
-        <div id="date-picker" class="input-field">
-          <select id="choose-date"></select>
+        <div class="row" id="filter-bar">
+          <div class="input-field col s6">
+            <select id="choose-date"></select>
+          </div>
+
+          <div class="input-field col s6">
+            <select id="filter" multiple></select>
+          </div>
         </div>
 
         <div id="action-bar">
-          <a href="#" id="view-configs" class="waves-effect waves-light btn">
-            <i class="material-icons left">settings</i>
-            Toggle configs
-          </a>
 
-          <div class="input-field inline-select">
-            <select id="filter" multiple></select>
-          </div>
         </div>
 
         <div id="data-list" class="collection">

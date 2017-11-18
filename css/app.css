@@ -1,5 +1,6 @@
 @import url('map.css');
 @import url('sidebar.css');
+@import url('footer.css');
 
 html,body {
   height: 100%;
@@ -13,7 +14,7 @@ html,body {
 
 #column-resize {
   height: 100%;
-  background: #666;
+  background: #AAA;
   width: 5px;
   cursor: col-resize;
 }

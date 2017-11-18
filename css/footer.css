@@ -1,0 +1,10 @@
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  padding: 10px 20px;
+  justify-content: space-between;
+  font-size: 13px;
+}
